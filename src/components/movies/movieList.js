@@ -10,8 +10,11 @@ var MovieList = React.createClass({
     var createMovieRow = function(movie) {
       return (
         <tr key={movie.id}>
-          <td><a href={"/#movies/" + movie.id}>{movie.id}</a></td>
-          <td>{movie.title}</td>
+          <td><a href={"/#movies/" + movie.id}>{movie.title}</a></td>
+          <td>{movie.year}</td>
+          <td>{movie.genre}</td>
+          <td>{movie.actors}</td>
+          <td>{movie.rating}</td>
         </tr>
       );
     };
@@ -20,8 +23,11 @@ var MovieList = React.createClass({
       <div>
         <table className="table">
           <thead>
-            <th>ID</th>
             <th>Title</th>
+            <th>Year</th>
+            <th>Genre</th>
+            <th>Actors</th>
+            <th>Rating</th>
           </thead>
           <tbody>
             {this.props.movies.map(createMovieRow, this)}
