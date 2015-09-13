@@ -6,7 +6,7 @@ var _ = require('lodash');
 
 //This would be performed on the server in a real app. Just stubbing in.
 var _generateId = function(movie) {
-  return movie.title.toLowerCase();
+  return movie.title.replace(/\s+/g, '-').toLowerCase();
 };
 
 var _clone = function(item) {

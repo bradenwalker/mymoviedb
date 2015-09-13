@@ -11,14 +11,31 @@ var ManageAuthorPage = React.createClass({
     Router.Navigation
   ],
 
+  statics: {
+    willTransitionFrom: function(transition, component) {
+      if (component.state.dirty && !confirm('Leave without saving?')) {
+        transition.abort();
+      }
+    }
+  },
+
   getInitialState: function() {
     return {
       movie: { title: '', year: '', genre: '', actors: '', rating: '' },
-      errors: {}
+      errors: {},
+      dirty: false
     };
   },
 
+  componentWillMount: function() {
+    var movieId = this.props.params.id; //From the path '/movie:id'
+    if (movieId){
+      this.setState({movie: MovieApi.getMovieById(movieId)});
+    }
+  },
+
   setMovieState: function(event) {
+    this.setState({dirty: true});
     var field = event.target.name;
     var value = event.target.value;
     this.state.movie[field] = value;
@@ -61,6 +78,7 @@ var ManageAuthorPage = React.createClass({
     }
 
     MovieApi.saveMovie(this.state.movie);
+    this.setState({dirty: false});
     toastr.success('Movie saved.');
     this.transitionTo('movies');
   },

@@ -13,6 +13,7 @@ var routes = (
     <DefaultRoute handler={require('./components/homePage')} />
     <Route name="movies" handler={require('./components/movies/moviePage')} />
     <Route name="addMovie" path="movie" handler={require('./components/movies/manageMoviePage')} />
+    <Route name="manageMovie" path="movie/:id" handler={require('./components/movies/manageMoviePage')} />
     <Route name="about" handler={require('./components/about/aboutPage')} />
     <NotFoundRoute handler={require('./components/notFoundPage')} />
     // <Redirect from="movie" to="movies" />

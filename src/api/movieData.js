@@ -10,7 +10,7 @@ module.exports = {
       rating: '5'
     },
     {
-      id: 'the big lebowski',
+      id: 'the-big-lebowski',
       title: 'The Big Lebowski',
       year: '1998',
       genre: 'Comedy',
@@ -18,7 +18,7 @@ module.exports = {
       rating: '5'
     },
     {
-      id: 'shaun of the dead',
+      id: 'shaun-of-the-dead',
       title: 'Shaun of the Dead',
       year: '2004',
       genre: 'Comedy',

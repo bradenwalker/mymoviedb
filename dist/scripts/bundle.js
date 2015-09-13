@@ -44717,7 +44717,7 @@ var _ = require('lodash');
 
 //This would be performed on the server in a real app. Just stubbing in.
 var _generateId = function(movie) {
-  return movie.title.toLowerCase();
+  return movie.title.replace(/\s+/g, '-').toLowerCase();
 };
 
 var _clone = function(item) {
@@ -44773,7 +44773,7 @@ module.exports = {
       rating: '5'
     },
     {
-      id: 'the big lebowski',
+      id: 'the-big-lebowski',
       title: 'The Big Lebowski',
       year: '1998',
       genre: 'Comedy',
@@ -44781,7 +44781,7 @@ module.exports = {
       rating: '5'
     },
     {
-      id: 'shaun of the dead',
+      id: 'shaun-of-the-dead',
       title: 'Shaun of the Dead',
       year: '2004',
       genre: 'Comedy',
@@ -44948,14 +44948,31 @@ var ManageAuthorPage = React.createClass({displayName: "ManageAuthorPage",
     Router.Navigation
   ],
 
+  statics: {
+    willTransitionFrom: function(transition, component) {
+      if (component.state.dirty && !confirm('Leave without saving?')) {
+        transition.abort();
+      }
+    }
+  },
+
   getInitialState: function() {
     return {
       movie: { title: '', year: '', genre: '', actors: '', rating: '' },
-      errors: {}
+      errors: {},
+      dirty: false
     };
   },
 
+  componentWillMount: function() {
+    var movieId = this.props.params.id; //From the path '/movie:id'
+    if (movieId){
+      this.setState({movie: MovieApi.getMovieById(movieId)});
+    }
+  },
+
   setMovieState: function(event) {
+    this.setState({dirty: true});
     var field = event.target.name;
     var value = event.target.value;
     this.state.movie[field] = value;
@@ -44998,6 +45015,7 @@ var ManageAuthorPage = React.createClass({displayName: "ManageAuthorPage",
     }
 
     MovieApi.saveMovie(this.state.movie);
+    this.setState({dirty: false});
     toastr.success('Movie saved.');
     this.transitionTo('movies');
   },
@@ -45022,6 +45040,13 @@ var React = require('react');
 var Input = require('../common/textInput');
 
 var MovieForm = React.createClass({displayName: "MovieForm",
+  propTypes: {
+    movie: React.PropTypes.object.isRequired,
+    onSave: React.PropTypes.func.isRequired,
+    onChange: React.PropTypes.func.isRequired,
+    errors: React.PropTypes.object
+  },
+
   render: function() {
     return (
       React.createElement("form", null, 
@@ -45073,6 +45098,8 @@ module.exports = MovieForm;
 "use strict";
 
 var React = require('react');
+var Router = require('react-router');
+var Link = Router.Link;
 
 var MovieList = React.createClass({displayName: "MovieList",
   propTypes: {
@@ -45082,7 +45109,7 @@ var MovieList = React.createClass({displayName: "MovieList",
     var createMovieRow = function(movie) {
       return (
         React.createElement("tr", {key: movie.id}, 
-          React.createElement("td", null, React.createElement("a", {href: "/#movies/" + movie.id}, movie.title)), 
+          React.createElement("td", null, React.createElement(Link, {to: "manageMovie", params: {id: movie.id}}, movie.title)), 
           React.createElement("td", null, movie.year), 
           React.createElement("td", null, movie.genre), 
           React.createElement("td", null, movie.actors), 
@@ -45112,7 +45139,7 @@ var MovieList = React.createClass({displayName: "MovieList",
 
 module.exports = MovieList;
 
-},{"react":197}],209:[function(require,module,exports){
+},{"react":197,"react-router":28}],209:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -45194,6 +45221,7 @@ var routes = (
     React.createElement(DefaultRoute, {handler: require('./components/homePage')}), 
     React.createElement(Route, {name: "movies", handler: require('./components/movies/moviePage')}), 
     React.createElement(Route, {name: "addMovie", path: "movie", handler: require('./components/movies/manageMoviePage')}), 
+    React.createElement(Route, {name: "manageMovie", path: "movie/:id", handler: require('./components/movies/manageMoviePage')}), 
     React.createElement(Route, {name: "about", handler: require('./components/about/aboutPage')}), 
     React.createElement(NotFoundRoute, {handler: require('./components/notFoundPage')}), 
     "// ", React.createElement(Redirect, {from: "movie", to: "movies"})
