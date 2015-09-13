@@ -1,6 +1,8 @@
 "use strict";
 
 var React = require('react');
+var Router = require('react-router');
+var Link = Router.Link;
 var MovieApi = require('../../api/movieApi');
 var MovieList = require('./movieList');
 
@@ -21,6 +23,7 @@ var MoviePage = React.createClass({
     return (
       <div>
         <h1>Movies</h1>
+        <Link to="addMovie" className="btn btn-default">Add Movie</Link>
         <MovieList movies={this.state.movies} />
       </div>
     );
