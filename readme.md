@@ -14,7 +14,7 @@ npm install
 gulp
 ```
 
-Gulp should open a new browser window for you, but if it doesn't, just point your browser to
+Gulp should open a new browser window for you, but if it doesn't, just point your browser to:
 
 ```
 localhost:3000
