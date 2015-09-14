@@ -3,7 +3,8 @@
 var React = require('react');
 var Router = require('react-router');
 var MovieForm = require('./movieForm');
-var MovieApi = require('../../api/movieApi');
+var MovieActions = require('../../actions/movieActions');
+var MovieStore = require('../../stores/movieStore');
 var toastr = require('toastr');
 
 var ManageAuthorPage = React.createClass({
@@ -30,7 +31,7 @@ var ManageAuthorPage = React.createClass({
   componentWillMount: function() {
     var movieId = this.props.params.id; //From the path '/movie:id'
     if (movieId){
-      this.setState({movie: MovieApi.getMovieById(movieId)});
+      this.setState({movie: MovieStore.getMovieById(movieId)});
     }
   },
 
@@ -77,7 +78,11 @@ var ManageAuthorPage = React.createClass({
       return;
     }
 
-    MovieApi.saveMovie(this.state.movie);
+    if (this.state.movie.id) {
+      MovieActions.updateMovie(this.state.movie);
+    } else {
+      MovieActions.createMovie(this.state.movie);
+    }
     this.setState({dirty: false});
     toastr.success('Movie saved.');
     this.transitionTo('movies');

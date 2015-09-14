@@ -43,7 +43,7 @@ var MovieApi = {
 
   deleteMovie: function(id) {
     console.log('Pretend this just deleted the movie from the DB via an AJAX call...');
-    _.remove(movies, { id: id});
+    _.remove(movies, {id: id});
   }
 };
 
