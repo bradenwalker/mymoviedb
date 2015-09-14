@@ -45492,7 +45492,23 @@ module.exports = {
       year: '1984',
       genre: 'Comedy',
       actors: 'Bill Murray, Dan Ackroyd, Harold Ramis',
-      rating: '5'
+      rating: '5.0'
+    },
+    {
+      id: 'the-godfather',
+      title: 'The Godfather',
+      year: '1972',
+      genre: 'Drama',
+      actors: 'Marlon Brando, Al Pacino, Diane Keaton, James Caan',
+      rating: '4.0'
+    },
+    {
+      id: 'citizen-kane',
+      title: 'Citizen Kane',
+      year: '1941',
+      genre: 'Drama',
+      actors: 'Orson Welles, Joseph Cotton',
+      rating: '5.0'
     },
     {
       id: 'the-big-lebowski',
@@ -45500,7 +45516,7 @@ module.exports = {
       year: '1998',
       genre: 'Comedy',
       actors: 'Jeff Bridges, John Goodman, Julianne Moore',
-      rating: '5'
+      rating: '5.0'
     },
     {
       id: 'shaun-of-the-dead',
@@ -45508,7 +45524,7 @@ module.exports = {
       year: '2004',
       genre: 'Comedy',
       actors: 'Simon Pegg, Nick Frost',
-      rating: '5'
+      rating: '4.5'
     }
   ]
 };
@@ -45532,7 +45548,10 @@ var About = React.createClass({displayName: "About",
             React.createElement("li", null, "Node"), 
             React.createElement("li", null, "Gulp"), 
             React.createElement("li", null, "Browserify"), 
-            React.createElement("li", null, "Bootstrap")
+            React.createElement("li", null, "Bootstrap"), 
+            React.createElement("li", null, "jQuery"), 
+            React.createElement("li", null, "toastr"), 
+            React.createElement("li", null, "lodash")
           )
         )
       )
@@ -45578,12 +45597,9 @@ var Header = React.createClass({displayName: "Header",
     return (
       React.createElement("nav", {className: "navbar navbar-default"}, 
         React.createElement("div", {className: "container-fluid"}, 
-          React.createElement(Link, {to: "app", className: "navbar-brand"}, 
-            React.createElement("h4", null, "MyMovieDB")
-          ), 
           React.createElement("ul", {className: "nav navbar-nav"}, 
             React.createElement("li", null, React.createElement(Link, {to: "app"}, "Home")), 
-            React.createElement("li", null, React.createElement(Link, {to: "movies"}, "Movies")), 
+            React.createElement("li", null, React.createElement(Link, {to: "movies"}, "My Movies")), 
             React.createElement("li", null, React.createElement(Link, {to: "about"}, "About"))
           )
         )
@@ -45647,8 +45663,8 @@ var Home = React.createClass({displayName: "Home",
     return (
       React.createElement("div", {className: "jumbotron"}, 
         React.createElement("h1", null, "My Movie DB"), 
-        React.createElement("p", null, "A Database of my Favorite Films"), 
-        React.createElement(Link, {to: "movies", className: "btn btn-primary btn-lrg"}, "See My Movies")
+        React.createElement("p", null, "A Database of My Personal Movie Collection"), 
+        React.createElement(Link, {to: "movies", className: "btn btn-default btn-lrg"}, "See My Movies")
       )
     );
   }
@@ -45828,11 +45844,17 @@ var React = require('react');
 var Router = require('react-router');
 var Link = Router.Link;
 var MovieActions = require('../../actions/movieActions');
+var Input = require('../../components/common/textInput');
 var toastr = require('toastr');
+
 
 var MovieList = React.createClass({displayName: "MovieList",
   propTypes: {
     movies: React.PropTypes.array.isRequired
+  },
+
+  getInitialState: function() {
+    return {searchString: ''};
   },
 
   deleteMovie: function(id, event) {
@@ -45841,30 +45863,65 @@ var MovieList = React.createClass({displayName: "MovieList",
     toastr.success('Movie Deleted');
   },
 
+  handleChange: function(event) {
+    this.setState({searchString: event.target.value});
+  },
+
+  compareSearch: function(movie) {
+    if(movie.title.toLowerCase().indexOf(this.state.searchString.toLowerCase()) !== -1) {
+      return true;
+    } else if (movie.year.indexOf(this.state.searchString) !== -1) {
+      return true;
+    } else if (movie.genre.toLowerCase().indexOf(this.state.searchString.toLowerCase()) !== -1) {
+      return true;
+    } else if (movie.actors.toLowerCase().indexOf(this.state.searchString.toLowerCase()) !== -1) {
+      return true;
+    } else if (movie.rating.indexOf(this.state.searchString) !== -1) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
   render: function() {
+    var searchString = this.state.searchString;
+
     var createMovieRow = function(movie) {
-      return (
-        React.createElement("tr", {key: movie.id}, 
-          React.createElement("td", null, React.createElement("a", {href: "#", onClick: this.deleteMovie.bind(this, movie.id), className: "btn btn-warning"}, "Delete")), 
-          React.createElement("td", null, React.createElement(Link, {to: "manageMovie", params: {id: movie.id}}, movie.title)), 
-          React.createElement("td", null, movie.year), 
-          React.createElement("td", null, movie.genre), 
-          React.createElement("td", null, movie.actors), 
-          React.createElement("td", null, movie.rating)
-        )
-      );
+      if (this.compareSearch(movie)) {
+        return (
+          React.createElement("tr", {key: movie.id}, 
+            React.createElement("td", null, movie.title), 
+            React.createElement("td", null, movie.year), 
+            React.createElement("td", null, movie.genre), 
+            React.createElement("td", null, movie.actors), 
+            React.createElement("td", null, movie.rating), 
+            React.createElement("td", null, React.createElement(Link, {to: "manageMovie", params: {id: movie.id}, className: "btn btn-default btn-xs"}, "Edit")), 
+            React.createElement("td", null, React.createElement("a", {href: "#", onClick: this.deleteMovie.bind(this, movie.id), className: "btn btn-default btn-xs"}, "Delete"))
+          )
+        );
+      } else {
+        console.log("this.props: ", this.props);
+      }
     };
 
     return (
       React.createElement("div", null, 
+      React.createElement(Input, {
+          name: "search", 
+          label: "Search", 
+          ref: "searchBar", 
+          placeholder: "Filter by Title, Genre, Year, Actors, or Rating", 
+          value: searchString, 
+          onChange: this.handleChange}), 
         React.createElement("table", {className: "table"}, 
           React.createElement("thead", null, 
-            React.createElement("th", null), 
             React.createElement("th", null, "Title"), 
             React.createElement("th", null, "Year"), 
             React.createElement("th", null, "Genre"), 
             React.createElement("th", null, "Actors"), 
-            React.createElement("th", null, "Rating")
+            React.createElement("th", null, "Rating"), 
+            React.createElement("th", null), 
+            React.createElement("th", null)
           ), 
           React.createElement("tbody", null, 
             this.props.movies.map(createMovieRow, this)
@@ -45877,7 +45934,7 @@ var MovieList = React.createClass({displayName: "MovieList",
 
 module.exports = MovieList;
 
-},{"../../actions/movieActions":205,"react":202,"react-router":33,"toastr":203}],216:[function(require,module,exports){
+},{"../../actions/movieActions":205,"../../components/common/textInput":211,"react":202,"react-router":33,"toastr":203}],216:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -45890,7 +45947,8 @@ var MovieList = require('./movieList');
 var MoviePage = React.createClass({displayName: "MoviePage",
   getInitialState: function() {
     return {
-      movies: MovieStore.getAllMovies()
+      movies: MovieStore.getAllMovies(),
+      searchString: 'Ghostbusters'
     };
   },
 
@@ -45910,9 +45968,8 @@ var MoviePage = React.createClass({displayName: "MoviePage",
   render: function() {
     return (
       React.createElement("div", null, 
-        React.createElement("h1", null, "Movies"), 
-        React.createElement(Link, {to: "addMovie", className: "btn btn-default"}, "Add Movie"), 
-        React.createElement(MovieList, {movies: this.state.movies})
+        React.createElement("h1", null, "My Movies ", React.createElement(Link, {to: "addMovie", className: "btn btn-default btn-sm"}, "Add New Movie")), 
+        React.createElement(MovieList, {movies: this.state.movies, searchString: this.state.searchString})
       )
     );
   }

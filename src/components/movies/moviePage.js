@@ -10,7 +10,8 @@ var MovieList = require('./movieList');
 var MoviePage = React.createClass({
   getInitialState: function() {
     return {
-      movies: MovieStore.getAllMovies()
+      movies: MovieStore.getAllMovies(),
+      searchString: ''
     };
   },
 
@@ -30,9 +31,8 @@ var MoviePage = React.createClass({
   render: function() {
     return (
       <div>
-        <h1>Movies</h1>
-        <Link to="addMovie" className="btn btn-default">Add Movie</Link>
-        <MovieList movies={this.state.movies} />
+        <h1>My Movies <Link to="addMovie" className="btn btn-default btn-sm">Add New Movie</Link></h1>
+        <MovieList movies={this.state.movies} searchString={this.state.searchString} />
       </div>
     );
   }
