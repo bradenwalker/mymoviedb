@@ -11,7 +11,7 @@ var MoviePage = React.createClass({
   getInitialState: function() {
     return {
       movies: MovieStore.getAllMovies(),
-      searchString: 'Ghostbusters'
+      searchString: ''
     };
   },
 
