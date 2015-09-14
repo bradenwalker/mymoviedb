@@ -9,12 +9,9 @@ var Header = React.createClass({
     return (
       <nav className="navbar navbar-default">
         <div className="container-fluid">
-          <Link to="app" className="navbar-brand">
-            <h4>MyMovieDB</h4>
-          </Link>
           <ul className="nav navbar-nav">
             <li><Link to="app">Home</Link></li>
-            <li><Link to="movies">Movies</Link></li>
+            <li><Link to="movies">My Movies</Link></li>
             <li><Link to="about">About</Link></li>
           </ul>
         </div>

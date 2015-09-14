@@ -9,8 +9,8 @@ var Home = React.createClass({
     return (
       <div className="jumbotron">
         <h1>My Movie DB</h1>
-        <p>A Database of my Favorite Films</p>
-        <Link to="movies" className="btn btn-primary btn-lrg">See My Movies</Link>
+        <p>A Database of My Personal Movie Collection</p>
+        <Link to="movies" className="btn btn-default btn-lrg">See My Movies</Link>
       </div>
     );
   }

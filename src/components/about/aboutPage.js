@@ -17,6 +17,9 @@ var About = React.createClass({
             <li>Gulp</li>
             <li>Browserify</li>
             <li>Bootstrap</li>
+            <li>jQuery</li>
+            <li>toastr</li>
+            <li>lodash</li>
           </ul>
         </p>
       </div>
